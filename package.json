@@ -1,0 +1,17 @@
+{
+  "name": "ddns",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "jest": "^29.6.2",
+    "tencentcloud-sdk-nodejs-dnspod": "^4.0.642"
+  }
+}
