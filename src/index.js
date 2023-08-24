@@ -100,9 +100,10 @@ async function task() {
         sendDingdingTalk(`新增解析：${ip}`);
       })
       .catch((e) => console.log(e));
+    return;
   }
-  const recordId = recordData.RecordList.find((item) => item.Name === SubDomain)?.RecordId;
-  if (!recordId) return;
+
+  if (!record?.RecordId) return;
 
   await client
     .ModifyRecord({
@@ -111,7 +112,7 @@ async function task() {
       RecordType: "A",
       Value: ip,
       RecordLine: "默认",
-      RecordId: recordId,
+      RecordId: record?.RecordId,
     })
     .then((data) => {
       console.log(`${new Date()} 修改解析成功: ${ip}`);
