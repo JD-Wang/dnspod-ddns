@@ -42,12 +42,11 @@ async function fetchIp() {
     const result1 = axios("https://qifu-api.baidubce.com/ip/local/geo/v1/district", { timeout })
       .then((res) => res.ip)
       .catch((e) => console.log(e));
-    const result2 = axios("https://www.taobao.com/help/getip.php", { timeout })
-      .then((res) => {
-        const regex = /[0-9.]+/;
-        const match = res.match(regex);
-        return match?.[0];
-      });
+    const result2 = axios("https://www.taobao.com/help/getip.php", { timeout }).then((res) => {
+      const regex = /[0-9.]+/;
+      const match = res.match(regex);
+      return match?.[0];
+    });
 
     return await Promise.race([result1, result2]);
   } catch (error) {}
@@ -64,7 +63,7 @@ async function sendDingdingTalk(ip) {
     await axios.post(WebhookUrl, {
       msgtype: "text",
       text: {
-        content: `服务器ip变动提醒: ${ip}`, // 根据您的需求，修改发送的消息内容
+        content: `服务器ip变动: ${ip}`, // 根据您的需求，修改发送的消息内容
       },
     });
 
@@ -86,6 +85,22 @@ async function task() {
 
   const recordData = await client.DescribeRecordList({ Domain: Domain });
 
+  const record = recordData.RecordList.find((item) => item.Name === SubDomain);
+  if (!record) {
+    client
+      .CreateRecord({
+        Domain: Domain,
+        SubDomain: SubDomain,
+        RecordType: "A",
+        Value: ip,
+        RecordLine: "默认",
+      })
+      .then((data) => {
+        console.log(`${new Date()} 新增解析成功: ${ip}`);
+        sendDingdingTalk(`新增解析：${ip}`);
+      })
+      .catch((e) => console.log(e));
+  }
   const recordId = recordData.RecordList.find((item) => item.Name === SubDomain)?.RecordId;
   if (!recordId) return;
 
@@ -99,8 +114,8 @@ async function task() {
       RecordId: recordId,
     })
     .then((data) => {
-      console.log(`${new Date()} 解析成功: ${ip}`);
-      sendDingdingTalk(ip);
+      console.log(`${new Date()} 修改解析成功: ${ip}`);
+      sendDingdingTalk(`修改解析：${ip}`);
     })
     .catch((e) => console.log(e));
 }
