@@ -63,7 +63,7 @@ async function sendDingdingTalk(ip) {
     await axios.post(WebhookUrl, {
       msgtype: "text",
       text: {
-        content: `服务器ip变动: ${ip}`, // 根据您的需求，修改发送的消息内容
+        content: `服务器ip变动-${ip}`, // 根据您的需求，修改发送的消息内容
       },
     });
 
