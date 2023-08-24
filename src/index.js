@@ -103,7 +103,7 @@ async function task() {
     return;
   }
 
-  if (!record?.RecordId) return;
+  if (record?.Value === ip) return;
 
   await client
     .ModifyRecord({
