@@ -40,11 +40,11 @@ const client = new DnspodClient(clientConfig);
 async function fetchIp() {
   try {
     const result1 = axios("https://qifu-api.baidubce.com/ip/local/geo/v1/district", { timeout })
-      .then((res) => res.ip)
+      .then((res) => res.data.ip)
       .catch((e) => console.log(e));
     const result2 = axios("https://www.taobao.com/help/getip.php", { timeout }).then((res) => {
       const regex = /[0-9.]+/;
-      const match = res.match(regex);
+      const match = res?.data?.match(regex);
       return match?.[0];
     });
 
